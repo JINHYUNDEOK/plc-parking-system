@@ -1,0 +1,85 @@
+기본판
+
+#include <Servo.h>
+
+
+// 핀 정의
+#define TRIG_PIN 13                 // 초음파 센서 트리거 핀
+#define ECHO_PIN 12                 // 초음파 센서 에코 핀
+#define RED_LED_PIN 9               // 빨간 LED
+#define GREEN_LED_PIN 11            // 초록 LED
+#define PIEZO_PIN 8                 // 피에조 부저
+#define PIR1_PIN 2                  // 첫 번째 적외선 센서 핀
+#define PIR2_PIN 4                  // 두 번째 적외선 센서 핀
+#define SERVO1_PIN 3                // 첫 번째 서보 모터 핀
+#define SERVO2_PIN 5                // 두 번째 서보 모터 핀
+
+Servo servo1;
+Servo servo2;
+
+void setup() {
+  // 핀 모드 설정
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
+  pinMode(GREEN_LED_PIN, OUTPUT);
+  pinMode(PIEZO_PIN, OUTPUT);
+  pinMode(PIR1_PIN, INPUT);
+  pinMode(PIR2_PIN, INPUT);
+
+  // 서보 모터 초기화
+  servo1.attach(SERVO1_PIN);
+  servo2.attach(SERVO2_PIN);
+
+  // 초기 상태 설정
+  digitalWrite(GREEN_LED_PIN, HIGH);  // 초록 LED 켜짐
+  digitalWrite(RED_LED_PIN, LOW);     // 빨간 LED 꺼짐
+  digitalWrite(PIEZO_PIN, LOW);       // 피에조 부저 꺼짐
+}
+
+long getDistance() {
+  // 초음파 센서를 이용해 거리 측정
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  long distance = duration * 0.034 / 2;
+
+  return distance;
+}
+
+void loop() {
+  long distance = getDistance();
+
+  // 거리 기반 LED 및 피에조 제어
+  if (distance <= 70) {
+    digitalWrite(RED_LED_PIN, HIGH);    // 빨간 LED 켜짐
+    digitalWrite(GREEN_LED_PIN, LOW);   // 초록 LED 꺼짐
+    tone(PIEZO_PIN, 1000);              // 피에조 부저 1000Hz로 울림
+  } else {
+    digitalWrite(RED_LED_PIN, LOW);     // 빨간 LED 꺼짐
+    digitalWrite(GREEN_LED_PIN, HIGH);  // 초록 LED 켜짐
+    noTone(PIEZO_PIN);                  // 피에조 부저 꺼짐
+  }
+
+  // 적외선 센서 기반 서보 모터 제어 (1초 유지)
+  if (digitalRead(PIR1_PIN) == HIGH) {
+    servo1.write(90);  // 첫 번째 서보 모터 90도 회전
+    delay(1000);       // 1초 대기
+  } else {
+    servo1.write(0);   // 첫 번째 서보 모터 0도 회전
+  }
+
+  if (digitalRead(PIR2_PIN) == HIGH) {
+    servo2.write(90);  // 두 번째 서보 모터 90도 회전
+    delay(1000);       // 1초 대기
+  } else {
+    servo2.write(0);   // 두 번째 서보 모터 0도 회전
+  }
+
+  delay(1000);  // 1000ms 대기
+}
+}
