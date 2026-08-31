@@ -6,10 +6,10 @@
 #define RED_LED_PIN 9               // 빨간 LED
 #define GREEN_LED_PIN 11            // 초록 LED
 #define PIEZO_PIN 8                 // 부저
-#define PIR1_PIN 2                  // 첫 번째 적외선 센서 
-#define PIR2_PIN 4                  // 두 번째 적외선 센서 
-#define SERVO1_PIN 3                // 첫 번째 서보 모터 
-#define SERVO2_PIN 5                // 두 번째 서보 모터 
+#define PIR1_PIN 2                  // 첫 번째 적외선 센서
+#define PIR2_PIN 4                  // 두 번째 적외선 센서
+#define SERVO1_PIN 3                // 첫 번째 서보 모터
+#define SERVO2_PIN 5                // 두 번째 서보 모터
 #define RELAY_PIN 6                 // PLC 전원을 제어할 릴레이 ( srd 05vdc sl c )
 #define X10_PIN 7                   // 첫 번째 서보모터 제어 신호 (X10)
 #define X11_PIN 10                   // 두 번째 서보모터 제어 신호 (X11)
@@ -31,9 +31,9 @@ void setup() {
   pinMode(PIEZO_PIN, OUTPUT);
   pinMode(PIR1_PIN, INPUT);
   pinMode(PIR2_PIN, INPUT);
-  pinMode(RELAY_PIN, OUTPUT);  // 릴레이 핀 
-  pinMode(X10_PIN, OUTPUT);    // X10 출력 
-  pinMode(X11_PIN, OUTPUT);    // X11 출력 
+  pinMode(RELAY_PIN, OUTPUT);  // 릴레이 핀
+  pinMode(X10_PIN, OUTPUT);    // X10 출력
+  pinMode(X11_PIN, OUTPUT);    // X11 출력
 
   // 서보 모터 초기화
   servo1.attach(SERVO1_PIN); // 상단 모터
@@ -66,7 +66,7 @@ void loop() {
   long distance = getDistance();
 
   // 거리 기반 LED 및 피에조 제어
-  if (distance <= 70) {                      // 70cm 이하의 거리에서 작동 
+  if (distance <= 70) {                      // 70cm 이하의 거리에서 작동
     digitalWrite(RED_LED_PIN, HIGH);    // 빨간 LED 켜짐
     digitalWrite(GREEN_LED_PIN, LOW);   // 초록 LED 꺼짐
     tone(PIEZO_PIN, 1000);              //  부저 켜짐 ( 1000Hz로 작동 )

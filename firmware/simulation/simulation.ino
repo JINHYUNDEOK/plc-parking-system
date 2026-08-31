@@ -1,4 +1,7 @@
+// 기본판
+
 #include <Servo.h>
+
 
 // 핀 정의
 #define TRIG_PIN 13                 // 초음파 센서 트리거 핀
@@ -13,10 +16,6 @@
 
 Servo servo1;
 Servo servo2;
-unsigned long pir1LastDetected = 0; // 첫 번째 적외선 센서 감지 시간
-unsigned long pir2LastDetected = 0; // 두 번째 적외선 센서 감지 시간
-bool pir1Active = false; // 첫 번째 적외선 센서 활성 상태
-bool pir2Active = false; // 두 번째 적외선 센서 활성 상태
 
 void setup() {
   // 핀 모드 설정
@@ -66,29 +65,20 @@ void loop() {
     noTone(PIEZO_PIN);                  // 피에조 부저 꺼짐
   }
 
-  // 적외선 센서 기반 서보 모터 제어 (물체 인식 시 즉시 회전하고, 사라지면 3초 후 원래대로 복귀)
-  if (digitalRead(PIR1_PIN) == LOW) {
-    if (!pir1Active) {
-      servo1.write(90);  // 첫 번째 서보 모터 90도 회전
-      pir1Active = true;
-    }
-    pir1LastDetected = millis(); // 마지막 감지 시간 업데이트
-  } else if (pir1Active && millis() - pir1LastDetected > 3000) {
-    servo1.write(0);   // 첫 번째 서보 모터 0도 회전 (물체 사라지고 3초 후)
-    pir1Active = false;
+  // 적외선 센서 기반 서보 모터 제어 (1초 유지)
+  if (digitalRead(PIR1_PIN) == HIGH) {
+    servo1.write(90);  // 첫 번째 서보 모터 90도 회전
+    delay(1000);       // 1초 대기
+  } else {
+    servo1.write(0);   // 첫 번째 서보 모터 0도 회전
   }
 
-  if (digitalRead(PIR2_PIN) == LOW) { //시발련아 왜 역방향으로 작동해
-    if (!pir2Active) {
-      servo2.write(90);  // 두 번째 서보 모터 90도 회전
-      pir2Active = true;
-    }
-    pir2LastDetected = millis(); // 마지막 감지 시간 업데이트
-    
-  } else if (pir2Active && millis() - pir2LastDetected > 3000) {
-    servo2.write(0);   // 두 번째 서보 모터 0도 회전 (물체 사라지고 3초 후)
-    pir2Active = false;
+  if (digitalRead(PIR2_PIN) == HIGH) {
+    servo2.write(90);  // 두 번째 서보 모터 90도 회전
+    delay(1000);       // 1초 대기
+  } else {
+    servo2.write(0);   // 두 번째 서보 모터 0도 회전
   }
 
-  delay(100);  // 100ms 대기
+  delay(1000);  // 1000ms 대기
 }
